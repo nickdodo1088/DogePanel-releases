@@ -26,23 +26,26 @@ curl -fsSLO https://github.com/nickdodo1088/DogePanel-releases/releases/latest/d
 
 ```
 访问地址：
-    http://10.0.0.8:28513/a1b2c3d4e5
+    https://10.0.0.8:28513/a1b2c3d4e5
 用户名： user1234ab
 密码： Ab3dEf6hIj9kLm2n
 ```
+
+端口、安全入口、用户名和密码都会随机生成；默认启用 HTTPS，并为这台服务器生成独立的自签证书。
 
 马上把这三项记下来，**密码只显示这一次**。
 
 ## 登录
 
 1. 把访问地址里的 IP 换成服务器的**公网 IP**（在云服务商的控制台里能看到），在浏览器里打开。地址最后那一段不能少。
-2. 打不开的话，多半是云服务商的**安全组**没有放行：在控制台里放行访问地址里的端口（TCP），再试一次。
-3. 输入用户名和密码，点“登录”。
+2. 自签证书首次访问会显示证书提示，选择“高级 → 继续访问”。
+3. 云服务器需要在**安全组**放行访问地址里显示的随机端口（TCP）。
+4. 输入安装结束时显示的用户名和密码，点“登录”。
 
 登录以后：
 
 - 在“应用商店”里把 OpenResty 和 PHP 装到本机，就可以建网站了；
-- 建议在“面板设置 → 安全”里开启两步验证和 HTTPS。
+- 建议在“面板设置 → 安全”里开启两步验证；需要受信任证书时，可在面板设置里替换自签证书。
 
 ## 忘了地址或密码
 
@@ -203,7 +206,9 @@ curl -fsSLO https://github.com/nickdodo1088/DogePanel-releases/releases/latest/d
 
 Type the installation password when asked; it is not shown as you type. Nothing else is asked. At the end, the address, user name and password of the panel are shown, the password only this once: write them down.
 
-Open the address in a browser with the public IP of the server. In a cloud, first allow the port of the address (TCP) in the security group. Sign in with the user name and password.
+HTTPS is enabled automatically with a self-signed certificate generated for this server. The port, security entrance, user name and password are random.
+
+Open the address with the server’s public IP. On the first browser certificate warning, choose Advanced and continue; you can replace the certificate in panel settings. In a cloud, allow the displayed port (TCP) in the security group, then sign in with the generated user name and password.
 
 - Upgrade: from v2.3.2-dp.4 on, the panel tells about a new version and upgrades itself with one click (the installation password is kept from the installation); or run the same command again. The current version is backed up first and comes back if the new one does not start.
 - `dgpctl user-info` shows the address and user name; `dgpctl update password` sets a new password; `dgpctl uninstall` uninstalls.
