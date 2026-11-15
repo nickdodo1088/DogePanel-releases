@@ -145,9 +145,11 @@ curl -fsSLO https://github.com/nickdodo1088/DogePanel-releases/releases/latest/d
 | 位置 | 内容 |
 | --- | --- |
 | `/opt/dogepanel/` | 面板的程序、数据和 `dgpctl` |
-| `/www/` | 网站、网站日志、软件（`/www/server`）和备份（`/www/backup`） |
+| `/www_work/wwwroot/` | 新建网站的默认公共根目录，可在“网站 → 高级设置 → 网站存放”修改 |
+| `/www/` | 软件（`/www/server`）、网站日志、备份（`/www/backup`）和旧站目录 |
 
-位置是固定的。磁盘不够时，把大硬盘挂载到 `/www`。
+修改公共根目录只影响新站和之后的目录切换，不会移动旧站文件。单站目录必须位于配置的公共根目录内；
+保留原上传账号的所有权，PHP 使用独立账号和目录 ACL。软件及备份仍在 `/www`，可为这些数据挂载独立磁盘。
 
 ### 安全
 
