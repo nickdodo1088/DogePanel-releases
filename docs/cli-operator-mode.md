@@ -8,7 +8,7 @@
 是主机策略，优先于网页账号、API Key 和 MFA；网页只显示状态，不提供解除入口。
 没有标记文件时保持当前行为，升级不会自行封锁现有面板。
 
-由 `dgpctl` 原子建立 `<PANEL_DIR>DATA_DIR/security/operator-restricted`，目录 root:root
+由 `dgpctl` 原子建立 `<PANEL_DIR>/data/security/operator-restricted`，目录 root:root
 0700、标记 0600。逐级检查属主、权限和符号链接；标记损坏或权限不安全时，高风险
 操作拒绝执行。关闭模式只能由本机 root CLI 删除标记。运行时重新核对，不仅启动时读取。
 此机制限制网页经正常接口取得主机权限，不宣称能抵抗已经控制 root Agent 的任意代码执行。
@@ -283,7 +283,7 @@ root 与 nobody 实际执行、非 root 伪造私有 RPC 失败，以及关闭�
 
 | 项目 | 实现 |
 | --- | --- |
-| 策略与任务状态 | `<PANEL_DIR>DATA_DIR/os-maintenance/`，root 私有目录；策略、历史和游标日志独立保存，不使用 Web 数据库授予权限 |
+| 策略与任务状态 | `<PANEL_DIR>/data/os-maintenance/`，root 私有目录；策略、历史和游标日志独立保存，不使用 Web 数据库授予权限 |
 | APT 上下文 | `<WWW_DIR>/server/dogepanel-maintenance/`；独立官方源、索引、缓存和配置，保留系统 dpkg 状态、hold/pinning 与外来架构，不覆盖原有源 |
 | 下载权限 | 公共 APT 元数据由 root 管理，仅 `lists/partial`、`archives/partial` 交给 `_apt`；不放宽公共父目录或面板私有目录 |
 | 准备与模拟 | 检查真实 Debian 代号、dpkg 架构、支持期限、包管理锁及磁盘；准备 `unattended-upgrades`、`needrestart`，随后模拟；失败不启用每日调度 |

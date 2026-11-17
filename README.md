@@ -73,7 +73,7 @@ bash quick_start.sh --decrypt dogepanel-<版本>-source.tar.gz.enc
 
 ## 来源与许可
 
-DogePanel 基于 [1Panel v2](https://github.com/1Panel-dev/1Panel) 二次开发，保留原版权及上游声明，采用 [GPL-3.0](LICENSE)。本仓库中的安装入口、界面和操作说明适用于 DogePanel。文档文件位置采用[相对路径与目录别名](docs/path-conventions.md)。
+DogePanel 基于 [1Panel v2](https://1panel.cn) 二次开发，保留原版权及上游声明，采用 [GPL-3.0](LICENSE)。本仓库中的安装入口、界面和操作说明适用于 DogePanel。文档文件位置采用[相对路径与目录别名](docs/path-conventions.md)。
 
 ## English
 
