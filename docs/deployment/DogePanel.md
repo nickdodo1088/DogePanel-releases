@@ -138,6 +138,7 @@ dgpctl
 | 32 | 普通运维模式 | 管理员限制网页危险操作 |
 | 33 | 管理员 Shell 任务 | 在可信终端维护执行内容 |
 | 34 / 35 | 语言 / Debian 自动维护 | 切换语言或管理系统更新 |
+| 36 | 建立 rkhunter 基准 | 确认系统状态可信后记录文件基准 |
 
 可直接输入 `dgpctl 14`、`dgpctl 24`、`dgpctl 35`。菜单和服务命令只重启面板程序，不作为重启业务应用的入口。
 
@@ -207,6 +208,15 @@ bash quick_start.sh
 ```
 
 已安装时脚本会走升级流程。需要解密密码时使用原安装密码。升级更新程序、`dgpctl` 和语言文件，保留端口、入口、网页语言及账号设置。旧 HTTP 安装保留原协议，需管理员明确开启 HTTPS；新安装默认 HTTPS。
+
+### 首次迁移到 `v2.3.2-dp.003`
+
+从旧短编号（例如 `v2.3.2-dp.49`）或过渡编号 `v2.3.3-dp.001/002` 迁移时，先保留面板及网站备份，再从服务器终端执行一次以下命令。脚本会校验发布包，并根据现有安装进入升级流程。迁移完成后可在网页继续检查更新。
+
+```bash
+curl -fL --proto '=https' -o quick_start.sh https://github.com/nickdodo1088/DogePanel-releases/releases/download/v2.3.2-dp.003/quick_start.sh
+bash quick_start.sh --version v2.3.2-dp.003 --force
+```
 
 升级后检查：
 
