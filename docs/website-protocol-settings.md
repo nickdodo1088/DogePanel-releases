@@ -32,3 +32,19 @@
 - 页面沿用参考项目的两列行布局、端口标签、域名加号编辑、证书统计与筛选。明暗主题及窄屏检查见仓库根目录 `design-qa.md`；较长标签采用足够宽的内层列。
 
 单机版本不包含 CDN 验证集群、第三方 CA 的 PKI 文件签发工具或多节点下发。HTTP/3 需要已编译的模块与 TLS 库支持，监听端口需另行确认服务器防火墙、云安全组放行；表单不擅自修改防火墙。0-RTT 默认关闭，GET/HEAD 的业务副作用仍须由应用判断。
+
+## 免费证书预检
+
+网站 HTTPS 和全局证书页都提供“检查域名”。面板从 Cloudflare、Google 和 AliDNS 查询公开记录，按域名展示解析地址、验证结果和处理建议。初次申请、手动续办和自动续期也会在后端检查。
+
+- 自动文件验证在 OpenResty 的验证目录临时放置随机探测文件。面板从每个查到的 A、AAAA 地址请求该文件，全部返回正确内容才能提交申请。证书机构下发真实文件后，面板会在通知验证前再核对一次。
+- DNS 验证先检查公开 DNS 区域。手动验证指引生成后，面板检查发布的 TXT 值或文件内容。重复检查使用同一份待验证记录，验证信息失效时可重新获取。
+- 探测请求限于公网地址及标准 HTTP/HTTPS 验证路径。公共解析结果和服务器出站网络会影响检查，证书机构仍使用自己的网络和签发策略。直连无法访问公网验证地址时，可使用 DNS 验证。 [HTTP-01 和 DNS-01 验证](https://letsencrypt.org/docs/challenge-types/) [签发限额](https://letsencrypt.org/docs/rate-limits/)
+
+## 跨域访问
+
+开启网站或单条反向代理的 CORS 后，面板按配置的协议、主机和端口匹配请求来源。带 Cookie 或其他凭据时填写明确的可信来源，可以每行一个。公开资源关闭凭据后可使用 `*`。未启用的站点保持原业务响应。 [Fetch CORS 协议](https://fetch.spec.whatwg.org/#http-cors-protocol)
+
+默认方法包括 GET、POST、OPTIONS、PUT、DELETE、PATCH，预检缓存为 86400 秒，可设为 0–86400 秒。默认请求头包括 Authorization、Content-Type、If-Modified-Since、Cache-Control、Provider、X-Requested-With、Origin、DNT、Keep-Alive、User-Agent 和 X-Mx-ReqToken。有效预检返回 204，普通 OPTIONS 由业务处理。面板在 OpenResty 的响应过滤阶段统一管理 CORS 响应头，覆盖反向代理和 FastCGI 返回的重复头，并保留 `Vary: Origin`。代理位置的独立配置优先于站点配置。
+
+保存后先验证 OpenResty 配置，失败恢复原文件。保存旧版跨域配置时重新校验来源规则。 [OpenResty Lua 响应过滤](https://github.com/openresty/lua-nginx-module#header_filter_by_lua_block)
