@@ -4,11 +4,11 @@
 
 通过浏览器管理 Linux 服务器上的网站、PHP、OpenResty、MySQL、Redis、ProxySQL、文件、备份和安全应用。
 
-[新手安装与使用指南](docs/deployment/DogePanel.md) · [dgpctl 数字菜单](docs/dgpctl-menu.md) · [下载最新版本](https://github.com/nickdodo1088/DogePanel-releases/releases/latest) · [English](#english)
+[新手安装与使用指南](docs/deployment/DogePanel.md) · [巡检上报配置](docs/security-reporting.md#部署和接入) · [dgpctl 数字菜单](docs/dgpctl-menu.md) · [下载最新版本](https://github.com/nickdodo1088/DogePanel-releases/releases/latest) · [English](#english)
 
 ## 第一次安装
 
-准备 Linux 服务器，以 root 登录；sudo 用户先执行 `sudo -i`。向维护者索取**安装密码**，用于解密发布包。新部署推荐 Debian 12 / 13，具体应用的版本、架构和安装方式以面板页面为准。
+准备使用 systemd 的 Linux 服务器，以 root 登录。sudo 用户先执行 `sudo -i`。向维护者索取用于解密发布包的**安装密码**。新部署推荐 Debian 12 或 13，脚本自动为 amd64 或 arm64 机器选择发布包。 [系统要求和实测范围](docs/deployment/DogePanel.md#发行版与架构)
 
 在服务器终端逐行执行：
 
@@ -23,7 +23,7 @@ bash quick_start.sh
 
 默认使用 **HTTPS、自签证书、随机端口和随机安全入口**。云服务器需放行显示的 TCP 端口，浏览器首次访问自签证书会有提示；确认是自己的服务器后继续，登录后可替换证书。安装密码与面板登录密码不同。
 
-缺少 curl 时，Debian 可先执行 `apt-get update`、`apt-get install -y ca-certificates curl openssl`。不需要 Docker 可使用 `bash quick_start.sh --skip-docker`，之后在面板按需安装。安装中断、离线安装、自定义参数及第一次创建网站，见[逐步指南](docs/deployment/DogePanel.md)。
+安装前请确认 CA 证书、curl 和 OpenSSL 已就绪。Debian 和 Ubuntu 可通过 APT 安装这些依赖。选择 `bash quick_start.sh --skip-docker` 可把 Docker 留到首次需要容器应用时再安装。 [基础依赖](docs/deployment/DogePanel.md#基础依赖) [逐步安装指南](docs/deployment/DogePanel.md)
 
 ## 升级与账号恢复
 

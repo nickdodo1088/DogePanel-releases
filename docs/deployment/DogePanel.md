@@ -6,17 +6,38 @@
 
 ## 1. 安装前准备
 
-1. 准备 Linux 服务器，新部署推荐 Debian 12 / 13。面板提供 amd64、arm64 发布包；应用版本和安装方式以对应页面的支持范围为准。
+1. 准备使用 systemd 管理服务的 Linux 服务器。新部署推荐 Debian 12 或 13。先核对下方的发行版和架构，再查看所需应用的支持范围。
 2. 使用 SSH 登录服务器。已有 root 权限可直接操作；sudo 用户先执行 `sudo -i`。
 3. 向维护者索取**安装密码**。它用于解密发布包，不是安装结束后生成的面板登录密码。
 4. 确保能够通过 HTTPS 下载 GitHub 发布附件，并能管理云服务器安全组。已有网站、数据库或其他面板时先做备份，再使用对应迁移流程。
 
-Debian 缺少下载工具时，可先安装基础工具：
+### 发行版与架构
+
+联网安装时，`quick_start.sh` 根据 `uname -m` 自动选择对应的加密包。`x86_64` 对应 amd64，`aarch64` 对应 arm64。发布包内的面板 Core 和 Agent 均为静态编译。安装器与应用仍依赖系统提供的工具、服务管理和运行库。
+
+| 发行版 | 已记录的 amd64 运行验收 |
+| --- | --- |
+| Debian 12 | 面板升级与回退、OpenResty 与 PHP-FPM 接入、Redis 更新和 OSSEC 告警 |
+| Debian 13 | MySQL、phpMyAdmin 和 OSSEC 的相关功能 |
+| Debian 11 | 遗留环境中的 OSSEC 文件变更与认证告警 |
+| Ubuntu 22.04 / 24.04 LTS | 应用安装、业务请求、面板权限、升级及测试环境重启。[Ubuntu 验收记录](../ubuntu-compatibility-validation.md) |
+| Ubuntu 23.04 / 23.10 | 应用与面板功能通过历史验收，发行版已结束官方安全维护。[Ubuntu 验收记录](../ubuntu-compatibility-validation.md) |
+| Rocky Linux 9 | 面板升级、普通管理和敏感操作的权限检查。[Rocky Linux 验收记录](../release-dp45.md) |
+
+arm64 发布包已核对签名、摘要及架构。Ubuntu 24.04 ARM64、AlmaLinux 和其他表外发行版与架构组合暂无运行验收记录。各应用的预编译包和安装方式以对应页面为准。 [发布验收](https://github.com/nickdodo1088/DogePanel-releases/releases/tag/v2.3.2-dp.004)
+
+32 位 x86（如 `i386`、`i686`）和 ARMv6（如初代树莓派、树莓派 Zero 和 Zero W）不受支持。当前安装流程要求 systemd 正在管理系统服务，用于以独立低权限账号启动面板 Web 进程。
+
+### 基础依赖
+
+在 Debian 或 Ubuntu 上，可以用 APT 安装下载和解密所需的工具。
 
 ```bash
 apt-get update
 apt-get install -y ca-certificates curl openssl
 ```
+
+其他发行版请先用系统包管理器安装 CA 证书、curl 和 OpenSSL。缺少 `openssl` 时，`quick_start.sh` 会提示安装。解密同一版本的加密包要求 OpenSSL 1.1.1 或更新版本。使用安装脚本核对其他版本的签名清单时，要求 OpenSSL 3.0 或更新版本。
 
 本指南中的命令在服务器终端执行。文件位置采用[相对路径与目录别名](../path-conventions.md)，不包含维护者机器上的真实路径、密码或密钥。
 
