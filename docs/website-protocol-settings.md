@@ -15,7 +15,9 @@
 
 ## 安全与适配边界
 
-地址只能为本机监听 IP 或通配地址；端口、TLS、加密套件和跳转目标均由后台验证，禁止任意 Nginx 指令注入。禁止同一地址端口混用 HTTP/HTTPS；启用 HTTPS 必须有有效的证书与私钥。站点至少保留一种协议，完全停站使用网站停止操作。保存失败恢复配置、证书文件和数据库。
+地址只能为本机监听 IP 或通配地址。端口、TLS、加密套件和跳转目标均由后台验证。一个监听地址和端口只允许一种协议。启用 HTTPS 必须有匹配的证书与私钥。HTTP 和 HTTPS 均可关闭，两个协议都关闭时站点配置从 OpenResty 加载目录移出，保留绑定端口、域名与证书以便恢复。保存失败恢复配置、证书文件和数据库。
+
+新建网站时，勾选域名行的 SSL 将按该行端口生成 HTTPS 监听。批量输入支持 `https://example.com:8101`，再次打开批量编辑时保留 SSL 选择。网站创建后可通过 HTTP 或 HTTPS 页面调整各自的端口，通过域名页面管理站点的名称。
 
 参考产品的海外验证集群属于 CDN 分布式功能，单机面板不显示无实际作用的集群设置。HTTP/3 按已安装 Nginx 构建能力显示；0-RTT 默认关闭，开启时拒绝不安全的早期请求，不承诺不支持的 TLS 库提供 QUIC 0-RTT。
 
@@ -35,7 +37,11 @@
 
 ## 绑定已有或上传证书
 
-网站 HTTPS 中的「选择已有证书」按名称、备注、签发者和类型搜索证书库。自签名证书与其他证书均可选择。页面会提示域名覆盖范围和有效期状态。选择或粘贴证书后点击「保存证书」即可绑定。校验失败时，弹窗保留输入和 OpenResty 返回的错误详情，原证书与配置继续生效。
+新建网站与网站 HTTPS 使用同一证书库。下拉框先列出覆盖全部站点域名的证书，再按覆盖数量排列其余证书。支持按名称、备注、签发者和类型搜索，面板证书、自签名证书及其他网站的证书均可选。页面会提示域名覆盖范围和有效期状态。
+
+「使用本地签发机构」可以为当前网站域名签发证书并绑定。绑定失败时可以重试同一张已签发的证书。选择面板证书时，当前证书副本与私钥保存在该网站的受保护 TLS 文件中。面板更换证书后可以重新绑定。
+
+选择或粘贴证书后点击「保存证书」即可绑定。上传时校验证书与私钥是否匹配。校验或重载失败时，弹窗保留输入和 OpenResty 返回的错误详情，原证书与配置继续生效。
 
 ## 免费证书预检
 
@@ -47,8 +53,8 @@
 
 ## 跨域访问
 
-开启网站或单条反向代理的 CORS 后，面板按配置的协议、主机和端口匹配请求来源。带 Cookie 或其他凭据时填写明确的可信来源，可以每行一个。公开资源关闭凭据后可使用 `*`。未启用的站点保持原业务响应。 [Fetch CORS 协议](https://fetch.spec.whatwg.org/#http-cors-protocol)
+开启网站或单条反向代理的 CORS 后，面板按配置的协议、主机和端口匹配请求来源。带 Cookie 或其他凭据时填写明确的可信来源，可以每行一个。公开资源可填 `$http_origin` 回显请求的 HTTP 或 HTTPS 来源，面板会关闭凭证支持。使用 `*` 时返回通配符。未启用的站点保持原业务响应。 [Fetch CORS 协议](https://fetch.spec.whatwg.org/#http-cors-protocol)
 
-默认方法包括 GET、POST、OPTIONS、PUT、DELETE、PATCH，预检缓存为 86400 秒，可设为 0–86400 秒。默认请求头包括 Authorization、Content-Type、If-Modified-Since、Cache-Control、Provider、X-Requested-With、Origin、DNT、Keep-Alive、User-Agent 和 X-Mx-ReqToken。有效预检返回 204，普通 OPTIONS 由业务处理。面板在 OpenResty 的响应过滤阶段统一管理 CORS 响应头，覆盖反向代理和 FastCGI 返回的重复头，并保留 `Vary: Origin`。代理位置的独立配置优先于站点配置。
+新配置默认允许 GET、POST 和 OPTIONS。可按业务需要加入 HEAD、PUT、DELETE 或 PATCH。预检缓存为 86400 秒，可设为 0–86400 秒。默认请求头包括 Authorization、Content-Type、If-Modified-Since、Cache-Control、Provider、X-Requested-With、Origin、DNT、Keep-Alive、User-Agent、X-Mx-ReqToken 和 Range。有效预检返回 204，普通 OPTIONS 由业务处理。面板在 OpenResty 的响应过滤阶段统一管理 CORS 响应头，覆盖反向代理和 FastCGI 返回的重复头，并保留 `Vary: Origin`。代理位置的独立配置优先于站点配置。保存时，站点配置只保留可直接阅读的策略参数和调用，共用实现由面板写入其 OpenResty 配置目录。已有策略再次保存时会转换为此格式。
 
 保存后先验证 OpenResty 配置，失败恢复原文件。保存旧版跨域配置时重新校验来源规则。 [OpenResty Lua 响应过滤](https://github.com/openresty/lua-nginx-module#header_filter_by_lua_block)
