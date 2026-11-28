@@ -1,0 +1,1 @@
+{"signatures":[{"keyid":"5df1f721c69e1fdf6c390a20c8e3129c4c6d065ff5b6239ff73eb8479cd2735a","sig":"01b04d9284c29715a7cbc886e95e759575faffcfa152fa465a48ec6fa4957eaf69cbc916578877cb38de44855a0f7a93665207892ada416beeb8f3c451430c09"}],"signed":{"_type":"snapshot","expires":"2026-12-05T00:01:04.775223434Z","meta":{"targets.json":{"version":31}},"spec_version":"1.0.31","version":31}}
